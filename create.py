@@ -648,7 +648,7 @@ writeFile('./scripts/code.js', code)
 
 # documentation
 old_cur = os.getcwd()
-os.chdir("../../../sdkjs")
+os.chdir("../sdkjs")
 if True == os.path.isdir(old_cur + '/lib'):
   shutil.rmtree(old_cur + '/lib', ignore_errors=True)
 os.mkdir(old_cur + '/lib')
