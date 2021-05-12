@@ -636,10 +636,22 @@ It is without interface plugin and is not installed by default in cloud, [self-h
 \n\
 If you need more information about how to use or write your own plugin, please see this https://api.onlyoffice.com/plugin/basic'
 
+if True == os.path.isdir('./plugin-default'):
+  shutil.rmtree('./plugin-default', ignore_errors=True)
+os.mkdir('./plugin-default')
+if True == os.path.isdir('./plugin-default/scripts'):
+  shutil.rmtree('./plugin-default/scripts', ignore_errors=True)
+os.mkdir('./plugin-default/scripts')
+if True == os.path.isdir('./resources'):
+  if True == os.path.isdir('./plugin-default/resources'):
+    shutil.rmtree('./plugin-default/resources', ignore_errors=True)
+  shutil.copytree('./resources', './plugin-default/resources')
 
-writeFile('./config.json', config)
-writeFile('./index.html', index_html)
-writeFile('./README.md', readme)
+writeFile('./plugin-default/scripts/code.js', code)
+writeFile('./plugin-default/config.json', config)
+writeFile('./plugin-default/index.html', index_html)
+writeFile('./plugin-default/README.md', readme)
+
 
 if True == os.path.isdir('./scripts'):
   shutil.rmtree('./scripts', ignore_errors=True)
@@ -648,7 +660,7 @@ writeFile('./scripts/code.js', code)
 
 # documentation
 old_cur = os.getcwd()
-os.chdir("../sdkjs")
+os.chdir("../../sdkjs")
 if True == os.path.isdir(old_cur + '/lib'):
   shutil.rmtree(old_cur + '/lib', ignore_errors=True)
 os.mkdir(old_cur + '/lib')
