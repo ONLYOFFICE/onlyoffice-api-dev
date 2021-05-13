@@ -1,14 +1,15 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 import shutil
 import uuid
 import json
 import os
 import re
 import base64
+import io
 
 def readFile(path):
   if os.path.exists(path):
-    with open(path, "r", encoding="utf-8") as file:
+    with io.open(path, "r", encoding="utf-8") as file:
       filedata = file.read()
     return filedata
   return ''
@@ -17,8 +18,8 @@ def writeFile(path, content):
   if (os.path.isfile(path)):
     os.remove(path)
 
-  with open(path, "w", encoding="utf-8") as file:
-    file.write(content)
+  with io.open(path, "w", encoding="utf-8") as file:
+    file.write(unicode(content))
   return
 
 class EditorApi(object):
@@ -110,12 +111,12 @@ class EditorApi(object):
     line = sLine.replace('\n', ' ')
     matches = re.search(r'{+.+} ', line).group()
     return matches[0:matches.find('} ') + 1].replace('?', '').strip().replace('(', '').replace(')', '').replace('{', '').replace('}', '').strip()
-  def getParams(self, desсription):
+  def getParams(self, description):
     allParams = []
     complexParams = []
 
     isAlreadyAdded = False
-    records = desсription.split('@param')
+    records = description.split('@param')
     if 0 != len(records):
       records = records[1:]
     for nRecord in range(len(records)):
