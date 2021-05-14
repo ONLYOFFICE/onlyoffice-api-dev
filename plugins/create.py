@@ -6,6 +6,10 @@ import os
 import re
 import base64
 import io
+import sys
+
+if (sys.version_info[0] >= 3):
+  unicode = str
 
 def readFile(path):
   if os.path.exists(path):
@@ -99,12 +103,14 @@ class EditorApi(object):
     return complexParams
 
   def get_typedef_param(self, sParamName):
-    for param in self.typedefParams:
-      if sParamName == param['sName']:
-        #return json.dumps(param['sType']).replace('"','') if type(param['sType']) is dict else param['sType']
-        return self.getDictAsObject(param['sType']) if type(param['sType']) is dict else param['sType']
-        #return param['sType']
-    return ''
+    allTypes = sParamName.split('|')
+    for nType in range(len(allTypes)):
+      normalParam = allTypes[nType].strip()
+      if self.is_typedef_param(normalParam):
+        for param in self.typedefParams:
+          if normalParam == param['sName']:
+            sParamName = sParamName.replace(normalParam, self.getDictAsObject(param['sType']) if type(param['sType']) is dict else param['sType'])
+    return sParamName
   def getParamNameFromLine(self, sLine):
     return sLine.split(re.search('{+.+} ', sLine).group())[1].strip().split(' ')[0].split('=')[0].replace('\n','').replace('[','').replace(']','')
   def getParamTypeFromLine(self, sLine):
@@ -186,18 +192,20 @@ class EditorApi(object):
     indexEndDecoration = rec.find("*/")
     decoration = ""
     alias = self.getAlias(rec[0:indexEndDecoration + 2])
-    paramsMap = self.getParams(rec[0:indexEndDecoration + 2].replace("\n\t", ""))
-    self.saveMethodReturn(alias, rec[0:indexEndDecoration + 2].replace("\n\t", ""))
-    returnValue = "undefined"
 
-    codeInterface = self.createMethodInterface(alias, paramsMap, returnValue)
     if ('' != alias):
       decoration = "\t/**" + rec[0:indexEndDecoration] + '*/'
       decoration = decoration.replace("@return ", "@returns ")
       decoration = decoration.replace("@returns {?", "@returns {")
-      decoration = self.deleteExcessDecor(decoration)
+
+    paramsMap = self.getParams(decoration.replace("\n\t", ""))
+    self.saveMethodReturn(alias, decoration.replace("\n\t", ""))
+    returnValue = "undefined"
+
+    codeInterface = self.createMethodInterface(alias, paramsMap, returnValue)
 
     if ('' != decoration):
+      decoration = self.deleteExcessDecor(decoration)
       self.append_record(decoration, codeInterface)
     return
   def check_record_for_builder_api(self, recordData):
@@ -329,6 +337,8 @@ class EditorApi(object):
       return False
     if -1 != paramType.lower().find('{object}'):
       return False
+    if -1 != paramType.lower().find('{undefined}'):
+      return False
     if -1 != paramType.lower().find('{number}'):
       return False
     if -1 != paramType.lower().find('{string}'):
@@ -343,6 +353,12 @@ class EditorApi(object):
       return False
     if True == paramType.split('|')[0].replace('[','').replace('{','').replace(' ','').isdigit():
       return False
+    allTypes = paramType.split('|')
+    if len(allTypes) == 1 : return True
+    for nType in range(len(allTypes)):
+      normalParam = allTypes[nType].replace('{',"").replace('}',"").strip()
+      if True == self.is_typedef_param( '{' + normalParam + '}'):
+        return True
     return True
 
   def append_record(self, decoration, codeInterface, init=False):
