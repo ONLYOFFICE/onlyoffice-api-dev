@@ -159,11 +159,11 @@ manifest = '{\n\
 def ignore_most(folder, names):
   ignore_list = []
   for name in names:
-    if -1 != name.find('.git') or -1 != name.find('create_extanstion.py'):
+    if -1 != name.find('.git') or -1 != name.find('create_extension.py'):
       ignore_list.append(name)
   return ignore_list
 
-folder_with_ext = pluginName + '_ext'
+folder_with_ext = 'extension-dist'
 if True == os.path.isdir('./' + folder_with_ext):
   shutil.rmtree('./' + folder_with_ext, ignore_errors=True)
 shutil.copytree('./', './' + folder_with_ext + '/plugin/', ignore=ignore_most)
