@@ -134,8 +134,6 @@ manifest = '{\n\
 	"description": "Plugin for ONLYOFFICE. ' + pluginName + '",\n\
 	"version": "1.0",\n\
 	"manifest_version": 2,\n\
-	"background": {\n\
-	},\n\
 	"browser_action": {\n\
 		"default_icon": {\n\
 			"19": "./plugin/resources/' + img_folder_name + '/icon.png",\n\
