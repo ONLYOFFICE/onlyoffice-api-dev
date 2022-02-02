@@ -126,7 +126,7 @@ main_js = '/**\n\
 })(window, undefined);'
 
 img_folder_name = 'light'
-if False == os.path.exists('./plugin/resources/light'):
+if False == os.path.exists('./resources/light'):
     img_folder_name = 'img'
 
 manifest = '{\n\
