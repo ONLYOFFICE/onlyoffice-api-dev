@@ -125,6 +125,10 @@ main_js = '/**\n\
 	}\n\
 })(window, undefined);'
 
+img_folder_name = 'light'
+if False == os.path.exists('./plugin/resources/light'):
+    img_folder_name = 'img'
+
 manifest = '{\n\
 	"name": "' + pluginName + '",\n\
 	"description": "Plugin for ONLYOFFICE. ' + pluginName + '",\n\
@@ -134,8 +138,8 @@ manifest = '{\n\
 	},\n\
 	"browser_action": {\n\
 		"default_icon": {\n\
-			"19": "./plugin/resources/light/icon.png",\n\
-			"38": "./plugin/resources/light/icon@2x.png"\n\
+			"19": "./plugin/resources/' + img_folder_name + '/icon.png",\n\
+			"38": "./plugin/resources/' + img_folder_name + '/icon@2x.png"\n\
 		}\n\
 	},	\n\
 	"web_accessible_resources": [\n' + web_accessible_resources + '	],\n\
