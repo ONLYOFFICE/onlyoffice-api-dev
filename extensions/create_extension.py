@@ -11,7 +11,6 @@ from os.path import isfile, join
 if (sys.version_info[0] >= 3):
     unicode = str
 
-
 def readFile(path):
     if os.path.exists(path):
         with io.open(path, "r", encoding="utf-8") as file:
@@ -54,10 +53,15 @@ web_accessible_resources +='\t\t\t\t"/main.js"\n'
 
 # content security policy
 content_security_policy = ''
-html_lines = readFile('index.html')
-for line in html_lines:
-  if -1 != line.find('src="https:'):
-      content_security_policy += line.split('src="')[1].replace('"></script>', '').replace('\n', '') + ' '
+for file in os.listdir("."):
+    if file.endswith(".html"):
+        html_lines = readFile(file)
+        for line in html_lines:
+            if -1 != line.find('src="https:'):
+                content = line.split('src="')[1].split('"')[0] + ' '
+                if (content_security_policy.find(content) == -1):
+                    content_security_policy += content
+
 main_js = '/**\n\
  *\n\
  * (c) Copyright Ascensio System SIA 2020\n\
