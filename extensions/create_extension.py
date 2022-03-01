@@ -61,6 +61,10 @@ for file in os.listdir("."):
                 content = line.split('src="')[1].split('"')[0] + ' '
                 if (content_security_policy.find(content) == -1):
                     content_security_policy += content
+            elif -1 != line.find("src='https:"):
+                content = line.split("src='")[1].split("'")[0] + ' '
+                if (content_security_policy.find(content) == -1):
+                    content_security_policy += content
 
 main_js = '/**\n\
  *\n\
